@@ -1,7 +1,7 @@
 $:
   vscode:
     - docker:
-        image: docker.cnb.cool/anyexyz/ollama/env/dockerfile-caches
+        image: docker.cnb.cool/anyexyz/ollama/env/dockerfile-caches:6ebc4fc1497ed8b34b38b4201fd9013977a40cd1
       runner:
         cpus: 16
         tags: cnb:arch:amd64:gpu
