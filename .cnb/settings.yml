@@ -1,0 +1,5 @@
+workspace:
+  launch:
+    button:
+      name: 一点就炸
+      description: 云原生 DeepSeek 启动
