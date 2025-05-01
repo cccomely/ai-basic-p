@@ -1,0 +1,13 @@
+$:
+  vscode:
+    - docker:
+        build: .ide/Dockerfile
+      runner:
+        cpus: 16
+        tags: cnb:arch:amd64:gpu
+      services:
+        - vscode
+        - docker
+      stages:
+        - name: start ollama
+          script: nohup ollama serve >/dev/null 2>&1 &
