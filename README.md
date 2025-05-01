@@ -21,6 +21,7 @@ ollama run ${image}
 ### 本仓库已内置模型列表
 
 - `qwen3:0.6b`
+- `qwen3:1.7b`
 
 ## 进阶
 
