@@ -22,6 +22,7 @@ ollama run ${image}
 
 - `qwen3:0.6b`
 - `qwen3:1.7b`
+- `qwen3:4b`
 
 ## 进阶
 
