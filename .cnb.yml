@@ -3,7 +3,6 @@ $:
     - docker:
         build: .ide/Dockerfile
       runner:
-        cpus: 16
         tags: cnb:arch:amd64:gpu
       services:
         - vscode
