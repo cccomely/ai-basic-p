@@ -28,6 +28,7 @@ ollama run ${image}
 - `qwen3:14b`
 - `qwen3:30b`
 - `qwen3:32b`
+- `qwen3-code:30b`
 
 ## 进阶
 
