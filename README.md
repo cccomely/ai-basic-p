@@ -1,4 +1,45 @@
-# Run qwen3 on Ollama via CNB
+# AI应用课程实验项目 | Run qwen3 on Ollama via CNB
+
+本仓库包含AI应用课程实验1-4的完整实现，涵盖结构化输出、有状态对话、内存系统和LangChain链式调用。
+
+---
+
+## 🎯 实验项目概览
+
+实验项目位于 `ai-course-labs/` 目录，包含：
+
+- **实验1**：结构化提示词与输出（Pydantic模型）
+- **实验2**：有状态对话的快照验证（多会话管理）
+- **实验3**：记忆系统的内容检索（LangChain Memory）
+- **实验4**：LangChain链的确定性输出（广告文案生成）
+
+### 🚀 快速开始实验
+
+```bash
+# 进入项目目录
+cd ai-course-labs
+
+# 安装依赖
+pip install -r requirements.txt
+
+# 确保 Ollama 服务运行并已下载 qwen3:8b 模型
+# （本环境已预置，无需额外配置）
+
+# 运行所有测试
+pytest grader/ -v
+```
+
+### 📚 详细文档
+
+请查看 [`ai-course-labs/README.md`](ai-course-labs/README.md) 获取：
+- 详细实验指南
+- 环境配置说明
+- 调试建议
+- 评分标准
+
+---
+
+## Ollama 环境说明
 
 ![badge](https://cnb.cool/Anyexyz/Ollama/qwen3/-/badge/git/latest/code/vscode-started)
 
