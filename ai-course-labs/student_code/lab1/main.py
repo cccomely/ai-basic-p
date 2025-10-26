@@ -63,51 +63,16 @@ def classify_text(text: str) -> TextClassification:
     # 5. 返回验证后的 Pydantic 模型实例
     
     # 示例 Prompt 结构（学生需要完善）:
-    prompt = f"""请对以下文本进行分类分析，并严格按照JSON格式输出结果。
-
-文本内容: {text}
-
-输出要求:
-1. 分类类别(category)必须是以下之一：'新闻', '技术', '体育', '娱乐', '财经'
-2. 给出分类置信度(confidence_score)，范围0.0-1.0
-3. 提取1-5个关键词(keywords)
-
-请直接输出JSON，不要有其他文字说明：
-{{
-    "category": "类别名称",
-    "confidence_score": 0.0到1.0的数值,
-    "keywords": ["关键词1", "关键词2"]
-}}
-"""
+    # prompt = f"""请对以下文本进行分类..."""
     
-    # 调用 Ollama API
-    ollama_url = "http://localhost:11434/api/generate"
-    payload = {
-        "model": "qwen3:8b",
-        "prompt": prompt,
-        "stream": False,
-        "format": "json"
-    }
+    # 提示：
+    # 1. 构建结构化 Prompt，要求模型输出 JSON 格式
+    # 2. 调用 Ollama API (http://localhost:11434/api/generate)
+    # 3. 解析响应中的 JSON 字符串
+    # 4. 使用 TextClassification.model_validate() 创建实例
+    # 5. 返回验证后的 Pydantic 模型实例
     
-    try:
-        response = httpx.post(ollama_url, json=payload, timeout=30.0)
-        response.raise_for_status()
-        result = response.json()
-        
-        # 提取模型输出
-        model_output = result.get("response", "")
-        
-        # 解析 JSON
-        parsed_data = json.loads(model_output)
-        
-        # 验证并创建 Pydantic 模型实例
-        classification = TextClassification.model_validate(parsed_data)
-        
-        return classification
-        
-    except Exception as e:
-        # 这里可以添加错误处理和重试逻辑
-        raise RuntimeError(f"文本分类失败: {e}")
+    raise NotImplementedError("请实现 classify_text 函数")
 
 
 # 测试代码（可选，用于学生本地调试）

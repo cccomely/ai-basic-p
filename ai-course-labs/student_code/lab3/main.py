@@ -3,14 +3,16 @@
 学生需要使用 LangChain 的 ConversationBufferMemory 管理会话历史
 """
 from typing import Dict
-from langchain.memory import ConversationBufferMemory
-from langchain_community.llms import Ollama
-from langchain.chains import LLMChain
-from langchain.prompts import PromptTemplate
+
+# 提示：需要导入 LangChain 相关模块
+# from langchain_core.prompts import PromptTemplate
+# from langchain_community.llms import Ollama
+# from langchain.memory import ConversationBufferMemory (或新版本的等效导入)
+# from langchain.chains import LLMChain (或新版本的等效导入)
 
 
 # 全局 Memory 映射：{session_id: ConversationBufferMemory 实例}
-SESSION_MEMORIES: Dict[str, ConversationBufferMemory] = {}
+SESSION_MEMORIES: Dict[str, any] = {}  # TODO: 将 any 替换为正确的类型
 
 
 def chat_with_langchain_memory(message: str, session_id: str) -> dict:
@@ -44,51 +46,15 @@ def chat_with_langchain_memory(message: str, session_id: str) -> dict:
     # 5. 运行链并获取响应
     # 6. 返回响应和 memory_variables
     
-    # 初始化或获取 Memory
-    if session_id not in SESSION_MEMORIES:
-        SESSION_MEMORIES[session_id] = ConversationBufferMemory(
-            memory_key="history",
-            return_messages=False
-        )
+    # 提示：
+    # 1. 检查 session_id 是否存在对应的 Memory，不存在则创建
+    # 2. 创建 Ollama LLM 实例
+    # 3. 创建 PromptTemplate（包含历史上下文）
+    # 4. 创建 LLMChain，连接 Prompt、LLM 和 Memory
+    # 5. 运行链并获取响应
+    # 6. 返回响应和 memory_variables
     
-    memory = SESSION_MEMORIES[session_id]
-    
-    # 创建 Ollama LLM
-    llm = Ollama(
-        model="qwen3:8b",
-        base_url="http://localhost:11434"
-    )
-    
-    # 创建 Prompt 模板
-    template = """以下是历史对话记录：
-{history}
-
-当前用户消息: {input}
-助手回复:"""
-    
-    prompt = PromptTemplate(
-        input_variables=["history", "input"],
-        template=template
-    )
-    
-    # 创建 LLMChain
-    chain = LLMChain(
-        llm=llm,
-        prompt=prompt,
-        memory=memory,
-        verbose=False
-    )
-    
-    # 运行链
-    response = chain.predict(input=message)
-    
-    # 获取 memory variables
-    memory_variables = memory.load_memory_variables({})
-    
-    return {
-        "response": response.strip(),
-        "memory_variables": memory_variables
-    }
+    raise NotImplementedError("请实现 chat_with_langchain_memory 函数")
 
 
 def get_memory_summary(session_id: str) -> str:
@@ -119,32 +85,13 @@ def get_memory_summary(session_id: str) -> str:
     # 3. 格式化消息历史为可读字符串
     # 4. 返回格式化结果
     
-    # 检查会话是否存在
-    if session_id not in SESSION_MEMORIES:
-        return ""
+    # 提示：
+    # 1. 检查 session_id 是否存在
+    # 2. 获取 Memory 的 buffer 或 chat_memory
+    # 3. 格式化消息历史为可读字符串
+    # 4. 返回格式化结果
     
-    memory = SESSION_MEMORIES[session_id]
-    
-    # 获取历史消息
-    # ConversationBufferMemory 的历史存储在 chat_memory.messages 中
-    messages = memory.chat_memory.messages
-    
-    if not messages:
-        return ""
-    
-    # 格式化历史记录
-    summary_lines = []
-    for msg in messages:
-        # LangChain 的消息对象有 type 属性
-        if hasattr(msg, 'type'):
-            role = "User" if msg.type == "human" else "AI"
-        else:
-            # 兼容处理
-            role = "User" if "human" in str(type(msg)).lower() else "AI"
-        
-        summary_lines.append(f"{role}: {msg.content}")
-    
-    return "\n".join(summary_lines)
+    raise NotImplementedError("请实现 get_memory_summary 函数")
 
 
 def clear_memory(session_id: str = None):

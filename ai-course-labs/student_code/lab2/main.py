@@ -54,60 +54,15 @@ def chat_with_memory(message: str, session_id: str) -> dict:
     # 5. 保存用户消息和助手回复到历史记录
     # 6. 返回结构化结果
     
-    # 初始化会话历史（如果不存在）
-    if session_id not in SESSION_HISTORY:
-        SESSION_HISTORY[session_id] = []
+    # 提示：
+    # 1. 检查 session_id 是否存在，不存在则初始化空列表
+    # 2. 计算 history_length（当前会话在本次对话前的消息数）
+    # 3. 构建 Prompt，包含历史上下文 + 当前消息
+    # 4. 调用 Ollama API 获取回复
+    # 5. 保存用户消息和助手回复到历史记录
+    # 6. 返回结构化结果
     
-    # 获取当前会话历史
-    history = SESSION_HISTORY[session_id]
-    
-    # 计算历史长度（本次对话前的消息数）
-    # 注意：这里计算的是user和assistant消息的总数
-    history_length = len(history)
-    
-    # 构建带历史上下文的 Prompt
-    prompt = ""
-    
-    # 添加历史对话上下文
-    if history:
-        prompt += "以下是历史对话记录：\n"
-        for msg in history:
-            role = "用户" if msg["role"] == "user" else "助手"
-            prompt += f"{role}: {msg['content']}\n"
-        prompt += "\n"
-    
-    # 添加当前用户消息
-    prompt += f"用户: {message}\n助手: "
-    
-    # 调用 Ollama API
-    ollama_url = "http://localhost:11434/api/generate"
-    payload = {
-        "model": "qwen3:8b",
-        "prompt": prompt,
-        "stream": False
-    }
-    
-    try:
-        response = httpx.post(ollama_url, json=payload, timeout=30.0)
-        response.raise_for_status()
-        result = response.json()
-        
-        # 提取 AI 回复
-        ai_response = result.get("response", "").strip()
-        
-        # 保存用户消息和 AI 回复到历史
-        SESSION_HISTORY[session_id].append({"role": "user", "content": message})
-        SESSION_HISTORY[session_id].append({"role": "assistant", "content": ai_response})
-        
-        # 返回结果
-        return {
-            "response": ai_response,
-            "history_length": history_length,
-            "session_id": session_id
-        }
-        
-    except Exception as e:
-        raise RuntimeError(f"对话失败: {e}")
+    raise NotImplementedError("请实现 chat_with_memory 函数")
 
 
 def clear_session(session_id: str = None):
