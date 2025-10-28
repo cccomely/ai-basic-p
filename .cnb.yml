@@ -1,136 +1,3 @@
-main:
-  push:
-    - env:
-        SCORE: 0
-    - docker:
-        build:
-          context: .
-          dockerfile: .ide/Dockerfile
-      runner:
-        tags: cnb:arch:amd64:gpu
-      services:
-        - docker
-      stages:
-        - name: setup
-          jobs:
-            - name: install-python
-              script: |
-                echo "🐍 安装 Python 环境..."
-                apt-get update -qq
-                apt-get install -y -qq python3 python3-pip python3-dev
-                echo "✅ Python 环境安装完成"
-            
-            - name: install-dependencies
-              script: |
-                echo "📦 安装 Python 依赖..."
-                cd ai-course-labs
-                pip3 install --break-system-packages -q -r requirements.txt
-                echo "✅ 依赖安装完成"
-            
-            - name: start-ollama
-              script: |
-                echo "🚀 启动 Ollama 服务..."
-                nohup ollama serve >/dev/null 2>&1 &
-                sleep 3
-                echo "✅ Ollama 服务已启动"
-
-        - name: test
-          jobs:
-            - name: run-pytest
-              allowFailure: true
-              script: |
-                cd ai-course-labs
-                echo "🧪 开始运行测试..."
-                echo "========================================"
-                
-                # 运行 pytest 并生成 JSON 报告
-                pytest grader/ -v --tb=short --json-report --json-report-file=test_results.json || true
-                
-                echo "========================================"
-                echo "📊 生成评分报告..."
-                
-                # 创建评分计算脚本
-                cat > calculate_score.py << 'EOF'
-                import json
-                import sys
-
-                try:
-                    with open('test_results.json', 'r') as f:
-                        results = json.load(f)
-                    
-                    # 获取测试统计
-                    summary = results.get('summary', {})
-                    total = summary.get('total', 0)
-                    passed = summary.get('passed', 0)
-                    failed = summary.get('failed', 0)
-                    
-                    # 计算分数 (满分100分)
-                    if total > 0:
-                        score = int((passed / total) * 100)
-                    else:
-                        score = 0
-                    
-                    # 输出详细报告
-                    print("\n" + "="*50)
-                    print("           📋 AI课程实验测试报告")
-                    print("="*50)
-                    print(f"总测试数: {total}")
-                    print(f"通过数量: {passed} ✅")
-                    print(f"失败数量: {failed} ❌")
-                    print(f"通过率: {passed/total*100:.1f}%" if total > 0 else "通过率: 0%")
-                    print(f"\n🎯 最终得分: {score}/100")
-                    print("="*50 + "\n")
-                    
-                    # 输出各实验详情
-                    tests = results.get('tests', [])
-                    lab_scores = {'lab1': [], 'lab2': [], 'lab3': [], 'lab4': []}
-                    
-                    for test in tests:
-                        nodeid = test.get('nodeid', '')
-                        outcome = test.get('outcome', '')
-                        for lab in lab_scores.keys():
-                            if lab in nodeid:
-                                lab_scores[lab].append(outcome == 'passed')
-                    
-                    print("📝 各实验得分明细:")
-                    for lab, results_list in lab_scores.items():
-                        if results_list:
-                            lab_passed = sum(results_list)
-                            lab_total = len(results_list)
-                            lab_score = int((lab_passed / lab_total) * 25)  # 每个实验25分
-                            print(f"  {lab.upper()}: {lab_passed}/{lab_total} 通过 → {lab_score}/25 分")
-                    
-                    print("\n" + "="*50)
-                    
-                    # 输出环境变量
-                    print(f"##[set-output score={score}]")
-                    
-                    # 退出码
-                    sys.exit(0 if passed == total else 1)
-                    
-                except Exception as e:
-                    print(f"❌ 评分计算失败: {e}")
-                    print("##[set-output score=0]")
-                    sys.exit(1)
-                EOF
-                
-                # 执行评分计算
-                python calculate_score.py
-              
-              exports:
-                score: SCORE
-        
-        - name: submit-score
-          jobs:
-            - name: send-to-opencamp
-              image: docker.cnb.cool/opencamp/learning-docker/send-score-to-opencamp:latest
-              settings:
-                COURSE_ID: 1914
-                SCORE: $SCORE
-                USER: $CNB_BUILD_USER
-                CHANNEL: cnb
-                TOKEN: 474da13269ca46efac13a442bfe548c5
-
 $:
   vscode:
     - docker:
@@ -143,3 +10,90 @@ $:
       stages:
         - name: start ollama
           script: nohup ollama serve >/dev/null 2>&1 &
+
+main:
+  push:
+    - docker:
+        build:
+          dockerfile: .ide/Dockerfile
+          by:
+            - ai-course-labs/requirements.txt
+            - .ide/Dockerfile
+          versionBy:
+            - ai-course-labs/requirements.txt
+      runner:
+        tags: cnb:arch:amd64:gpu
+        cpus: 4
+      volumes:
+        - models:copy-on-write
+        - /root/.cache/pip:copy-on-write
+      stages:
+        - name: 启动 Ollama
+          script: |
+            nohup ollama serve > /tmp/ollama.log 2>&1 &
+            sleep 5
+            for i in {1..30}; do
+              if curl -s http://localhost:11434/api/tags > /dev/null 2>&1; then
+                echo "Ollama 已就绪"
+                break
+              fi
+              sleep 2
+            done
+        - name: 安装依赖并测试
+          script: |
+            cd ai-course-labs
+            pip3 install -r requirements.txt
+            pytest grader/ -v --json-report --json-report-file=report.json
+        - name: 测试报告
+          script: |
+            cd ai-course-labs
+            if [ -f report.json ]; then
+              echo "测试完成"
+              cat report.json | grep -o '"passed":[0-9]*' || true
+              cat report.json | grep -o '"failed":[0-9]*' || true
+            else
+              echo "未找到报告文件"
+            fi
+
+  pull_request:
+    - docker:
+        build:
+          dockerfile: .ide/Dockerfile
+          by:
+            - ai-course-labs/requirements.txt
+            - .ide/Dockerfile
+          versionBy:
+            - ai-course-labs/requirements.txt
+      runner:
+        tags: cnb:arch:amd64:gpu
+        cpus: 4
+      volumes:
+        - models:copy-on-write
+        - /root/.cache/pip:copy-on-write
+      stages:
+        - name: 启动 Ollama
+          script: |
+            nohup ollama serve > /tmp/ollama.log 2>&1 &
+            sleep 5
+            for i in {1..30}; do
+              if curl -s http://localhost:11434/api/tags > /dev/null 2>&1; then
+                echo "Ollama 已就绪"
+                break
+              fi
+              sleep 2
+            done
+        - name: 安装依赖并测试
+          script: |
+            cd ai-course-labs
+            pip3 install -r requirements.txt
+            pytest grader/ -v --json-report --json-report-file=report.json
+        - name: 测试报告
+          script: |
+            cd ai-course-labs
+            if [ -f report.json ]; then
+              echo "测试完成"
+              cat report.json | grep -o '"passed":[0-9]*' || true
+              cat report.json | grep -o '"failed":[0-9]*' || true
+            else
+              echo "未找到报告文件"
+            fi
