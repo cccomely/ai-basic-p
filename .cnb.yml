@@ -17,7 +17,7 @@ main:
               script: |
                 echo "📦 安装 Python 依赖..."
                 cd ai-course-labs
-                pip install --break-system-packages -q -r requirements.txt
+                pip3 install --break-system-packages -q -r requirements.txt
                 echo "✅ 依赖安装完成"
             
             - name: start-ollama
