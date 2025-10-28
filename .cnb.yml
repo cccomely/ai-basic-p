@@ -17,10 +17,9 @@ main:
         build:
           dockerfile: .ide/Dockerfile
           by:
-            - ai-course-labs/requirements.txt
             - .ide/Dockerfile
           versionBy:
-            - ai-course-labs/requirements.txt
+            - .ide/Dockerfile
       runner:
         tags: cnb:arch:amd64
         cpus: 16
@@ -60,10 +59,9 @@ main:
         build:
           dockerfile: .ide/Dockerfile
           by:
-            - ai-course-labs/requirements.txt
             - .ide/Dockerfile
           versionBy:
-            - ai-course-labs/requirements.txt
+            - .ide/Dockerfile
       runner:
         tags: cnb:arch:amd64
         cpus: 16
