@@ -13,23 +13,19 @@ main:
       stages:
         - name: setup
           jobs:
+            - name: install-dependencies
+              script: |
+                echo "📦 安装 Python 依赖..."
+                cd ai-course-labs
+                pip install --break-system-packages -q -r requirements.txt
+                echo "✅ 依赖安装完成"
+            
             - name: start-ollama
               script: |
                 echo "🚀 启动 Ollama 服务..."
                 nohup ollama serve >/dev/null 2>&1 &
                 sleep 3
                 echo "✅ Ollama 服务已启动"
-            
-            - name: verify-environment
-              script: |
-                echo "🔍 验证环境配置..."
-                echo "当前 Python 版本："
-                python --version
-                echo ""
-                echo "已安装的关键包："
-                pip list | grep -E "langchain|pydantic|pytest|httpx"
-                echo ""
-                echo "✅ 环境验证完成（所有依赖已在 Docker 镜像中预装）"
 
         - name: test
           jobs:
