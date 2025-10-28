@@ -22,8 +22,8 @@ main:
           versionBy:
             - ai-course-labs/requirements.txt
       runner:
-        tags: cnb:arch:amd64:gpu
-        cpus: 4
+        tags: cnb:arch:amd64
+        cpus: 16
       volumes:
         - models:copy-on-write
         - /root/.cache/pip:copy-on-write
@@ -65,8 +65,8 @@ main:
           versionBy:
             - ai-course-labs/requirements.txt
       runner:
-        tags: cnb:arch:amd64:gpu
-        cpus: 4
+        tags: cnb:arch:amd64
+        cpus: 16
       volumes:
         - models:copy-on-write
         - /root/.cache/pip:copy-on-write
