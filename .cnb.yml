@@ -13,6 +13,13 @@ main:
       stages:
         - name: setup
           jobs:
+            - name: install-python
+              script: |
+                echo "🐍 安装 Python 环境..."
+                apt-get update -qq
+                apt-get install -y -qq python3 python3-pip python3-dev
+                echo "✅ Python 环境安装完成"
+            
             - name: install-dependencies
               script: |
                 echo "📦 安装 Python 依赖..."
