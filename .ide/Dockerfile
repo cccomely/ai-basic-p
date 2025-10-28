@@ -27,8 +27,14 @@ ENV OLLAMA_ORIGINS=*
 # 设置工作目录
 WORKDIR /tmp
 
-# 复制依赖文件（使用相对于构建上下文的路径）
-COPY ./ai-course-labs/requirements.txt /tmp/requirements.txt
+# 直接在镜像中创建 requirements.txt（避免 COPY 问题）
+RUN echo 'langchain>=0.1.0' > /tmp/requirements.txt && \
+    echo 'langchain-community>=0.0.10' >> /tmp/requirements.txt && \
+    echo 'pydantic>=2.0.0' >> /tmp/requirements.txt && \
+    echo 'pytest>=7.4.0' >> /tmp/requirements.txt && \
+    echo 'pytest-timeout>=2.1.0' >> /tmp/requirements.txt && \
+    echo 'pytest-json-report>=1.5.0' >> /tmp/requirements.txt && \
+    echo 'httpx>=0.25.0' >> /tmp/requirements.txt
 
 # 安装 Python 依赖（预安装所有实验所需的包）
 RUN pip install --break-system-packages --no-cache-dir -r /tmp/requirements.txt && \
