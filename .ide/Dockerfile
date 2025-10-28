@@ -13,8 +13,8 @@ RUN apt update && apt install -y \
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1 && \
     update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
 
-# 升级pip到最新版本
-RUN pip install --upgrade pip setuptools wheel
+# 升级pip到最新版本（使用 --break-system-packages 绕过 PEP 668 限制）
+RUN pip install --break-system-packages --upgrade pip setuptools wheel
 
 # 安装 Ollama
 RUN curl -fsSL https://ollama.com/install.sh | sh
@@ -25,13 +25,13 @@ ENV OLLAMA_HOST=0.0.0.0
 ENV OLLAMA_ORIGINS=*
 
 # 设置工作目录
-WORKDIR /workspace/ai-course-labs
+WORKDIR /tmp
 
-# 复制依赖文件
-COPY ai-course-labs/requirements.txt /tmp/requirements.txt
+# 复制依赖文件（使用相对于构建上下文的路径）
+COPY ./ai-course-labs/requirements.txt /tmp/requirements.txt
 
 # 安装 Python 依赖（预安装所有实验所需的包）
-RUN pip install --no-cache-dir -r /tmp/requirements.txt && \
+RUN pip install --break-system-packages --no-cache-dir -r /tmp/requirements.txt && \
     rm /tmp/requirements.txt
 
 # 验证Python环境和关键包已安装

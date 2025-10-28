@@ -3,7 +3,9 @@ main:
     - env:
         SCORE: 0
     - docker:
-        build: .ide/Dockerfile
+        build:
+          context: .
+          dockerfile: .ide/Dockerfile
       runner:
         tags: cnb:arch:amd64:gpu
       services:
