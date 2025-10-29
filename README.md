@@ -13,6 +13,32 @@
 - **实验3**：记忆系统的内容检索（LangChain Memory）
 - **实验4**：LangChain链的确定性输出（广告文案生成）
 
+## 前置条件
+- 您必须报名 [AI 应用训练营](https://opencamp.cn/AI/camp/2025llm)
+
+  ![](resource/ai.jpg)
+
+- 您必须在训练营个人中心完成 CNB 账号绑定
+
+  ![](resource/bangding.jpg)
+
+## 操作流程
+
+- Fork 本仓库，解锁作业副本。
+- 在您 Fork 的仓库中点击 **云原生开发** 按钮进入开发环境。
+- 根据文档完成实验。
+- 完成后提交代码到 main 分支，并创建合并请求。
+
+![](resource/pr.png)
+
+- 最后可以在 pr 页面来查看评分过程（可多次提交代码，每次提交都会触发评分，以最高分为准）
+
+![](resource/pingce.png)
+
+- 如果通过，则可以在 opencamp 的晋级榜单上看到自己的成绩，如没有，请查看上一步的流水线日志。
+
+![](resource/bangdan.jpg)
+
 ### 🚀 快速开始实验
 
 ```bash
