@@ -29,22 +29,62 @@ main:
               fi
               sleep 2
             done
-        - name: 安装依赖并测试
+        - name: 运行测试并计算分数
           allowFailure: true
           script: |
             cd ai-course-labs
             pip3 install -r requirements.txt
-            pytest grader/ -v --json-report --json-report-file=report.json
-        - name: 测试报告
-          script: |
-            cd ai-course-labs
-            if [ -f report.json ]; then
-              echo "测试完成"
-              cat report.json | grep -o '"passed":[0-9]*' || true
-              cat report.json | grep -o '"failed":[0-9]*' || true
-            else
-              echo "未找到报告文件"
+            
+            # 运行测试并捕获输出
+            echo "========== 开始运行测试 =========="
+            pytest grader/ -v > /tmp/test_output.txt 2>&1 || true
+            cat /tmp/test_output.txt
+            
+            # 从pytest输出中提取通过和失败的测试数
+            PASSED=$(grep -oP '\d+(?= passed)' /tmp/test_output.txt | tail -1 || echo "0")
+            FAILED=$(grep -oP '\d+(?= failed)' /tmp/test_output.txt | tail -1 || echo "0")
+            
+            # 处理空值
+            [ -z "$PASSED" ] && PASSED=0
+            [ -z "$FAILED" ] && FAILED=0
+            
+            # 如果没有匹配到，尝试其他格式
+            if [ "$PASSED" = "0" ] && [ "$FAILED" = "0" ]; then
+              # 尝试匹配 "X passed in" 格式
+              PASSED=$(grep -oP '^\s*\d+(?= passed in)' /tmp/test_output.txt | tail -1 || echo "0")
+              FAILED=$(grep -oP '^\s*\d+(?= failed in)' /tmp/test_output.txt | tail -1 || echo "0")
+              [ -z "$PASSED" ] && PASSED=0
+              [ -z "$FAILED" ] && FAILED=0
             fi
+            
+            TOTAL=$((PASSED + FAILED))
+            
+            echo ""
+            echo "========== 测试结果统计 =========="
+            echo "通过测试数: $PASSED"
+            echo "失败测试数: $FAILED"
+            echo "总测试数: $TOTAL"
+            
+            # 计算分数 (0-100)
+            if [ "$TOTAL" -gt 0 ]; then
+              SCORE=$(awk "BEGIN {printf \"%.0f\", ($PASSED/$TOTAL)*100}")
+            else
+              SCORE=0
+            fi
+            
+            echo "最终分数: $SCORE/100"
+            echo "========================================"
+            
+            # 导出环境变量供后续步骤使用
+            echo "SCORE=$SCORE" >> $CNB_EXPORT
+        - name: 提交分数到 OpenCamp
+          image: docker.cnb.cool/opencamp/learning-docker/send-score-to-opencamp:latest
+          settings:
+            COURSE_ID: 1914
+            SCORE: $SCORE
+            USER: $CNB_BUILD_USER
+            CHANNEL: cnb
+            TOKEN: 474da13269ca46efac13a442bfe548c5
 
   pull_request:
     - docker:
@@ -63,19 +103,59 @@ main:
               fi
               sleep 2
             done
-        - name: 安装依赖并测试
+        - name: 运行测试并计算分数
           allowFailure: true
           script: |
             cd ai-course-labs
             pip3 install -r requirements.txt
-            pytest grader/ -v --json-report --json-report-file=report.json
-        - name: 测试报告
-          script: |
-            cd ai-course-labs
-            if [ -f report.json ]; then
-              echo "测试完成"
-              cat report.json | grep -o '"passed":[0-9]*' || true
-              cat report.json | grep -o '"failed":[0-9]*' || true
-            else
-              echo "未找到报告文件"
+            
+            # 运行测试并捕获输出
+            echo "========== 开始运行测试 =========="
+            pytest grader/ -v > /tmp/test_output.txt 2>&1 || true
+            cat /tmp/test_output.txt
+            
+            # 从pytest输出中提取通过和失败的测试数
+            PASSED=$(grep -oP '\d+(?= passed)' /tmp/test_output.txt | tail -1 || echo "0")
+            FAILED=$(grep -oP '\d+(?= failed)' /tmp/test_output.txt | tail -1 || echo "0")
+            
+            # 处理空值
+            [ -z "$PASSED" ] && PASSED=0
+            [ -z "$FAILED" ] && FAILED=0
+            
+            # 如果没有匹配到，尝试其他格式
+            if [ "$PASSED" = "0" ] && [ "$FAILED" = "0" ]; then
+              # 尝试匹配 "X passed in" 格式
+              PASSED=$(grep -oP '^\s*\d+(?= passed in)' /tmp/test_output.txt | tail -1 || echo "0")
+              FAILED=$(grep -oP '^\s*\d+(?= failed in)' /tmp/test_output.txt | tail -1 || echo "0")
+              [ -z "$PASSED" ] && PASSED=0
+              [ -z "$FAILED" ] && FAILED=0
             fi
+            
+            TOTAL=$((PASSED + FAILED))
+            
+            echo ""
+            echo "========== 测试结果统计 =========="
+            echo "通过测试数: $PASSED"
+            echo "失败测试数: $FAILED"
+            echo "总测试数: $TOTAL"
+            
+            # 计算分数 (0-100)
+            if [ "$TOTAL" -gt 0 ]; then
+              SCORE=$(awk "BEGIN {printf \"%.0f\", ($PASSED/$TOTAL)*100}")
+            else
+              SCORE=0
+            fi
+            
+            echo "最终分数: $SCORE/100"
+            echo "========================================"
+            
+            # 导出环境变量供后续步骤使用
+            echo "SCORE=$SCORE" >> $CNB_EXPORT
+        - name: 提交分数到 OpenCamp
+          image: docker.cnb.cool/opencamp/learning-docker/send-score-to-opencamp:latest
+          settings:
+            COURSE_ID: 1914
+            SCORE: $SCORE
+            USER: $CNB_BUILD_USER
+            CHANNEL: cnb
+            TOKEN: 474da13269ca46efac13a442bfe548c5
