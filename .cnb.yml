@@ -75,8 +75,10 @@ main:
             echo "最终分数: $SCORE/100"
             echo "========================================"
             
-            # 导出环境变量供后续步骤使用
-            echo "SCORE=$SCORE" >> $CNB_EXPORT
+            # 使用CNB规范的方式导出环境变量
+            echo "##[set-output SCORE=$SCORE]"
+          exports:
+            SCORE: SCORE
         - name: 提交分数到 OpenCamp
           image: docker.cnb.cool/opencamp/learning-docker/send-score-to-opencamp:latest
           settings:
@@ -149,8 +151,10 @@ main:
             echo "最终分数: $SCORE/100"
             echo "========================================"
             
-            # 导出环境变量供后续步骤使用
-            echo "SCORE=$SCORE" >> $CNB_EXPORT
+            # 使用CNB规范的方式导出环境变量
+            echo "##[set-output SCORE=$SCORE]"
+          exports:
+            SCORE: SCORE
         - name: 提交分数到 OpenCamp
           image: docker.cnb.cool/opencamp/learning-docker/send-score-to-opencamp:latest
           settings:
