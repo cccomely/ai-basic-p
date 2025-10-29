@@ -6,6 +6,7 @@ RUN apt update && apt install -y \
     nload \
     git \
     git-lfs \
+    openssh-server \
     && rm -rf /var/lib/apt/lists/*
 
 # 安装 Ollama
