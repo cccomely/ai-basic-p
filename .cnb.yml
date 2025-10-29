@@ -1,7 +1,7 @@
 $:
   vscode:
     - docker:
-        build: .ide/Dockerfile
+        image: docker.cnb.cool/opencamp/learning-ai/ai-course-lab-basic:latest
       runner:
         tags: cnb:arch:amd64:gpu
       services:
@@ -13,13 +13,20 @@ $:
 
 main:
   push:
+    - services:
+        - docker
+      runner:
+        tags: cnb:arch:amd64
+      stages:
+        - name: 构建 Docker 镜像
+          script: |
+            docker build -t ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:latest -f .ide/Dockerfile .
+        - name: 推送 Docker 镜像
+          script: |
+            docker push ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:latest
+    
     - docker:
-        build:
-          dockerfile: .ide/Dockerfile
-          by:
-            - .ide/Dockerfile
-          versionBy:
-            - .ide/Dockerfile
+        image: docker.cnb.cool/opencamp/learning-ai/ai-course-lab-basic:latest
       runner:
         tags: cnb:arch:amd64
         cpus: 16
@@ -56,12 +63,7 @@ main:
 
   pull_request:
     - docker:
-        build:
-          dockerfile: .ide/Dockerfile
-          by:
-            - .ide/Dockerfile
-          versionBy:
-            - .ide/Dockerfile
+        image: docker.cnb.cool/opencamp/learning-ai/ai-course-lab-basic:latest
       runner:
         tags: cnb:arch:amd64
         cpus: 16

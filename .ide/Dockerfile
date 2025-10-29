@@ -1,11 +1,11 @@
-FROM cnbcool/default-dev-env:latest
+FROM python:3.10-slim
 
 # 更新软件源并安装基础工具
 RUN apt update && apt install -y \
+    curl \
     nload \
-    python3 \
-    python3-pip \
-    python3-venv \
+    git \
+    git-lfs \
     && rm -rf /var/lib/apt/lists/*
 
 # 安装 Ollama
