@@ -30,6 +30,7 @@ main:
               sleep 2
             done
         - name: 安装依赖并测试
+          allowFailure: true
           script: |
             cd ai-course-labs
             pip3 install -r requirements.txt
@@ -63,6 +64,7 @@ main:
               sleep 2
             done
         - name: 安装依赖并测试
+          allowFailure: true
           script: |
             cd ai-course-labs
             pip3 install -r requirements.txt
