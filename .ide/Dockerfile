@@ -9,6 +9,16 @@ RUN apt update && apt install -y \
     openssh-server \
     && rm -rf /var/lib/apt/lists/*
 
+# 安装 code-server 与插件
+RUN curl -fsSL https://code-server.dev/install.sh | sh &&\
+    code-server --install-extension cnbcool.cnb-welcome &&\
+    code-server --install-extension redhat.vscode-yaml &&\
+    code-server --install-extension waderyan.gitblame &&\
+    code-server --install-extension mhutchie.git-graph &&\
+    code-server --install-extension donjayamanne.githistory &&\
+    code-server --install-extension cloudstudio.live-server &&\
+    code-server --install-extension tencent-cloud.coding-copilot
+
 # 安装 Ollama
 RUN curl -fsSL https://ollama.com/install.sh | sh
 
