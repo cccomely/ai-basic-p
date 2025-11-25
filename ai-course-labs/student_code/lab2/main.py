@@ -44,25 +44,69 @@ def chat_with_memory(message: str, session_id: str) -> dict:
     """
     global SESSION_HISTORY
     
-    # TODO: 学生需要实现此函数
-    #
-    # 实现步骤建议:
     # 1. 检查 session_id 是否存在，不存在则初始化空列表
-    # 2. 计算 history_length（当前会话在本次对话前的消息数）
-    # 3. 构建 Prompt，包含历史上下文 + 当前消息
-    # 4. 调用 Ollama API 获取回复
-    # 5. 保存用户消息和助手回复到历史记录
-    # 6. 返回结构化结果
+    if session_id not in SESSION_HISTORY:
+        SESSION_HISTORY[session_id] = []
     
-    # 提示：
-    # 1. 检查 session_id 是否存在，不存在则初始化空列表
     # 2. 计算 history_length（当前会话在本次对话前的消息数）
-    # 3. 构建 Prompt，包含历史上下文 + 当前消息
-    # 4. 调用 Ollama API 获取回复
-    # 5. 保存用户消息和助手回复到历史记录
-    # 6. 返回结构化结果
+    history_length = len(SESSION_HISTORY[session_id])
     
-    raise NotImplementedError("请实现 chat_with_memory 函数")
+    # 3. 构建 Prompt，包含历史上下文 + 当前消息
+    # 构建历史对话上下文
+    history_context = ""
+    for i in range(0, len(SESSION_HISTORY[session_id]), 2):
+        if i + 1 < len(SESSION_HISTORY[session_id]):
+            user_msg = SESSION_HISTORY[session_id][i]
+            assistant_msg = SESSION_HISTORY[session_id][i + 1]
+            history_context += f"用户: {user_msg['content']}\n助手: {assistant_msg['content']}\n\n"
+    
+    prompt = f"""{history_context}用户: {message}
+助手: """
+    
+    # 4. 调用 Ollama API 获取回复
+    api_url = "http://localhost:11434/api/generate"
+    payload = {
+        "model": "qwen3:8b",
+        "prompt": prompt,
+        "stream": False
+    }
+    
+    try:
+        response = httpx.post(api_url, json=payload, timeout=30.0)
+        response.raise_for_status()
+        
+        response_data = response.json()
+        ai_response = response_data["response"].strip()
+        
+        # 5. 保存用户消息和助手回复到历史记录
+        # 添加用户消息
+        SESSION_HISTORY[session_id].append({"role": "user", "content": message})
+        # 添加助手回复
+        SESSION_HISTORY[session_id].append({"role": "assistant", "content": ai_response})
+        
+        # 6. 返回结构化结果
+        return {
+            "response": ai_response,
+            "history_length": history_length,
+            "session_id": session_id
+        }
+        
+    except httpx.RequestError as e:
+        # 如果API调用失败，返回错误信息
+        error_response = f"API调用失败: {str(e)}"
+        return {
+            "response": error_response,
+            "history_length": history_length,
+            "session_id": session_id
+        }
+    except Exception as e:
+        # 其他异常处理
+        error_response = f"系统错误: {str(e)}"
+        return {
+            "response": error_response,
+            "history_length": history_length,
+            "session_id": session_id
+        }
 
 
 def clear_session(session_id: str = None):
@@ -102,10 +146,10 @@ if __name__ == "__main__":
     print("\n=== 测试会话隔离 ===")
     clear_session()
     
-    result_a1 = chat_with_memory("苹果", "session_A")
+    result_a1 = chat_with_memory("香蕉", "session_A")
     print(f"Session A 第1次 - history_length: {result_a1['history_length']}")
     
-    result_b1 = chat_with_memory("香蕉", "session_B")
+    result_b1 = chat_with_memory("黄瓜", "session_B")
     print(f"Session B 第1次 - history_length: {result_b1['history_length']}")
     
     result_a2 = chat_with_memory("我之前说了什么？", "session_A")

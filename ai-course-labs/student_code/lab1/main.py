@@ -175,7 +175,10 @@ if __name__ == "__main__":
     test_texts = [
         "OpenAI发布GPT-5，性能提升10倍",
         "中国队在巴黎奥运会夺得金牌",
-        "A股市场今日大涨，沪指突破4000点"
+        "A股市场今日大涨，沪指突破4000点",
+        "近日，一高校保洁阿姨手搓银杏叶周边，用秋叶打造校园童话世界：银杏叶伞、星星叶堆······浪漫，至死不渝。",
+        "China's State Council Information Office on Saturday released a white paper titled \"Carbon Peaking and Carbon Neutrality China\'s Plans and Solutions.\"",
+        "AI future depends as much on responsible governance as technology, experts say"
     ]
     
     for text in test_texts:
