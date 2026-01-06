@@ -136,7 +136,7 @@ if __name__ == "__main__":
     result1 = chat_with_memory("你好", session_id)
     print(f"第1次对话 - history_length: {result1['history_length']}, response: {result1['response'][:50]}")
     
-    result2 = chat_with_memory("我叫张三", session_id)
+    result2 = chat_with_memory("我叫来恩炜，你想怎样？", session_id)
     print(f"第2次对话 - history_length: {result2['history_length']}, response: {result2['response'][:50]}")
     
     result3 = chat_with_memory("我刚才说了什么？", session_id)
@@ -152,5 +152,5 @@ if __name__ == "__main__":
     result_b1 = chat_with_memory("黄瓜", "session_B")
     print(f"Session B 第1次 - history_length: {result_b1['history_length']}")
     
-    result_a2 = chat_with_memory("我之前说了什么？", "session_A")
+    result_a2 = chat_with_memory("我之前说了什么？", "session_B")
     print(f"Session A 第2次 - history_length: {result_a2['history_length']}, response: {result_a2['response'][:50]}")

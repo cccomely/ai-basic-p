@@ -1,0 +1,38 @@
+    1  cd ai-course-labs/
+    2  ls
+    3  cd student_code
+    4  ls
+    5  cd lab2
+    6  ls
+    7  python3 main.py
+    8  cd ..
+    9  ls
+   10  cd ..
+   11  ls
+   12  pip3 install -r requirements.txt
+   13  ls
+   14  cd student_code/
+   15  ls
+   16  cd lab2
+   17  python3 main.py
+   18  python3 main.py
+   19  cd ..
+   20  cd ~
+   21  pwd
+   22  cd /
+   23  ls
+   24  cd workspace/
+   25  ollama run qwen3:8b
+   26  ollama run llama3.2
+   27  ollama list
+   28  ollama show llama3.2:latest
+   29  ollama  -v
+   30  python3
+   31  pip3 install ollama
+   32  python3
+   33  history -> history.txt
+   34  sudo apt update
+   35  apt update
+   36  apt install history
+   37  history 50 -> history.txt
+   38  history  > history.txt
