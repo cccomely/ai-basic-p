@@ -1,9 +1,11 @@
 import ollama as oa
 co=oa.Client('http://localhost:11434')
 a=input()
-b=input("请输入文件名，推荐扩展名为csv")
+b=input("请输入文件名，推荐扩展名为csv：\n")
 stream=co.chat(model='qwen3:8b',messages=[{'role':'user','content':a}],stream=True)
 m,n,reslai,reslai1=[],[],[],[]
+#for b in stream:
+#    print(b['message']['content'],end='',flush=True)
 for c in stream:
     m.append(c['message']['content'])
 for cc in m:
@@ -22,6 +24,8 @@ for z in range(len(rres)):
     if rres[z]!='':
         if rres[z][-1]=='|':
             resnum=z
+for z in range(len(rres)-resnum-1):
+    print(rres[resnum+z+1])
 for z in range(resnum):
     reslai.append(rres[z])
 for z in reslai:
