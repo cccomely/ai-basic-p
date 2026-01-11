@@ -23,17 +23,25 @@ rres=res.split('\n')
 for z in range(len(rres)):
     if rres[z]!='':
         if rres[z][-1]=='|':
-            resnum=z
-for z in range(len(rres)-resnum-1):
-    print(rres[resnum+z+1])
-for z in range(resnum):
+            resnumwei=z
+for z in range(len(rres)):
+    if rres[z]!='':
+        if rres[z][0]=='|':
+            resnumtou=z
+for z in range(len(rres)-resnumwei-1):
+    print(rres[resnumwei+z+1])
+for z in range(resnumwei):
     reslai.append(rres[z])
 for z in reslai:
     if z=='':
         pass
     else:
         reslai1.append(z)
+shouhang=reslai1[0]
+for z in range(resnumtou):
+    reslai1.pop(0)
 fp=open(b,"w")
+fp.write(shouhang)
 num=len(reslai1)
 for z in range(num):
     t=reslai1[z]+'\n'
