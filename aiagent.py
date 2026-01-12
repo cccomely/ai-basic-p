@@ -28,6 +28,8 @@ for z in range(len(rres)):
     if rres[z]!='':
         if rres[z][0]=='|':
             resnumtou=z
+            break
+print("resnumtou is {resnumtou}.",resnumtou)
 for z in range(len(rres)-resnumwei-1):
     print(rres[resnumwei+z+1])
 for z in range(resnumwei):
@@ -38,8 +40,8 @@ for z in reslai:
     else:
         reslai1.append(z)
 shouhang=reslai1[0]
-for z in range(resnumtou):
-    reslai1.pop(0)
+#for z in range(resnumtou):
+#    reslai1.pop(0)
 fp=open(b,"w")
 fp.write(shouhang)
 num=len(reslai1)
