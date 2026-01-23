@@ -33,7 +33,7 @@ for z in reslai:
         pass
     else:
         reslai1.append(z)
-shouhang=reslai1[0]
+shouhang=reslai1[0]+'\n'
 for z in range(len(reslai1)):
     if reslai1[z]!='':
         if reslai1[z][0]=='|':
