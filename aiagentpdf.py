@@ -3,7 +3,7 @@
 
 # In[ ]:
 
-
+biaozhi=False
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import cm
