@@ -42,6 +42,16 @@ for z in range(len(reslai1)):
 print(f"resnumtou is {resnumtou}.")
 for z in range(resnumtou):
     reslai1.pop(0)
+while True:
+    temp=0
+    for z in range(len(reslai1)):
+        p=reslai1[z].replace("|","")
+        if '----------' in p:
+            hanghao=z
+            temp=1
+    if temp==0:
+        break
+    reslai1.remove(reslai1[hanghao])
 fp=open(b,"w")
 fp.write(shouhang)
 num=len(reslai1)
