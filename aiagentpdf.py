@@ -3,7 +3,7 @@
 
 # In[ ]:
 
-biaozhi=False
+biaozhi=True
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import cm
@@ -16,7 +16,7 @@ pdfmetrics.registerFont(TTFont('SimSun', 'simsun.ttc'))
 import ollama as oa
 co=oa.Client('http://localhost:11434')
 a=input()
-b=input("请输入文件名，推荐扩展名为txt：\n")
+b=input("请输入文件名，推荐扩展名为pdf：\n")
 doc = SimpleDocTemplate(b, pagesize=A4)
 stream=co.chat(model='qwen3:8b',messages=[{'role':'user','content':a}],stream=True)
 m,n,reslai,reslai1,story=[],[],[],[],[]
@@ -75,7 +75,7 @@ for item in reslai1:
          hangbiao.append(reslai1.index(item))
 if len(hangbiao)>6:
      print("AI生成了不相干的多余废话，请AI再来一次")
-     biaozhi=True
+     biaozhi=False
 page=len(hangbiao)//3
 col_widths = [4.5*cm, 3.5*cm, 3*cm, 3*cm]
 if (page>0) and biaozhi:

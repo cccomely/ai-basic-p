@@ -3,7 +3,7 @@ import openpyxl
 from openpyxl import Workbook
 co=oa.Client('http://localhost:11434')
 a=input()
-b=input("请输入文件名，推荐扩展名为csv：\n")
+b=input("请输入文件名，推荐扩展名为xlsx：\n")
 stream=co.chat(model='qwen3:8b',messages=[{'role':'user','content':a}],stream=True)
 m,n,reslai,reslai1=[],[],[],[]
 #for b in stream:
