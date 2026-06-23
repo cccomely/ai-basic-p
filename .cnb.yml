@@ -87,3 +87,21 @@ main:
             USER: $CNB_BUILD_USER
             CHANNEL: cnb
             TOKEN: 474da13269ca46efac13a442bfe548c5
+.npc: &npc
+  - stages:
+                - name: NPC 响应
+                          script: |
+                                            echo "NPC Slug: $CNB_NPC_SLUG"
+                                            echo "NPC Name: $CNB_NPC_NAME"
+                                            echo "NPC Prompt: $CNB_NPC_PROMPT"
+                                                                # 这里可以调用 AI API 进行响应
+                                                                          
+                                                                           # 为特定角色配置触发事件
+Rice:
+  issue.comment@npc: *npc
+  pull_request.comment@npc: *npc
+                                                                      
+  # 默认兜底配置（所有未单独配置的角色）
+$:
+  issue.comment@npc: *npc
+  pull_request.comment@npc: *npc

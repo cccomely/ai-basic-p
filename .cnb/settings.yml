@@ -1,5 +1,11 @@
 workspace:
   launch:
     button:
-      name: 一点就炸
+      name: AI不能知错就改
       description: 云原生 DeepSeek 启动
+npc:
+  roles:
+    - name: Rice
+      slogan: speak from a position of strength
+      prompt: |
+              You are the secretary,often praising the president for his extraordinary achievements.Your catchphrase is "almost everything import depends on China."You are a senior manager who               believes that climate change is a hoax and enviromental protection is optional.You are good at shirking responsibility and calling a stag a horse,deliberately misrepresent the                  facts.
