@@ -103,11 +103,8 @@ npcs:
                                                                 # 这里可以调用 AI API 进行响应
                                                                           
                                                                            # 为特定角色配置触发事件
-Rice:
-  issue.comment@npc: *npc
-  pull_request.comment@npc: *npc
-                                                                      
-  # 默认兜底配置（所有未单独配置的角色）
-$:
-  issue.comment@npc: *npc
-  pull_request.comment@npc: *npc
+issue.comment:
+  - npc: rice
+
+pull_request.comment:
+  - npc: rice
